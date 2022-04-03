@@ -25,8 +25,6 @@ def main():
 
     camera_pose_controller = CameraPoseController(camera_source)
     camera_pose_controller.start()
-    time.sleep(30)
-    camera_pose_controller.stop()
 
 
 if __name__ == "__main__":
