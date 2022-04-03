@@ -1,6 +1,5 @@
-import logging
 import argparse
-import time
+import logging
 
 from camera_controller.CameraPoseController import CameraPoseController
 

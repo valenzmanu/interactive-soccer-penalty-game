@@ -1,9 +1,12 @@
-import threading
 import logging
+import threading
 import time
 
 import cv2
 import mediapipe as mp
+import numpy as np
+
+from pose_classification.simple_threshold_pose_classification import SimpleThresholdPoseClassification
 
 
 class CameraPoseController(threading.Thread):
@@ -13,12 +16,15 @@ class CameraPoseController(threading.Thread):
         self.camera_source = camera_source
         self.is_running = False
         self.name = "CameraPoseController"
+        self.pose_samples_folder = 'poses_csvs'
+        self.class_name = 'kicking'
 
     def run(self) -> None:
         logging.info(f'Running {self.name}')
         logging.debug(f'Creating Mediapipe Objects')
         mp_drawing = mp.solutions.drawing_utils
         mp_holistic = mp.solutions.holistic
+        simple_threshold_classificator = SimpleThresholdPoseClassification(threshold_line_y=350)
         logging.debug(f'Opening video capture from {self.camera_source}')
         cap = cv2.VideoCapture(self.camera_source)
 
@@ -28,41 +34,51 @@ class CameraPoseController(threading.Thread):
 
             while cap.isOpened():
 
-                success, image = cap.read()
+                success, frame = cap.read()
+                unprocessed_frame = frame.copy()
                 start = time.time()
-
-                # Flip the image horizontally for a later selfie-view display
-                # Convert the BGR image to RGB.
-                image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
 
                 # To improve performance, optionally mark the image as not writeable to
                 # pass by reference.
-                image.flags.writeable = False
+                frame.flags.writeable = False
 
                 # Process the image and detect the holistic
-                results = holistic.process(image)
+                results = holistic.process(frame)
 
                 # Draw landmark annotation on the image.
-                image.flags.writeable = True
+                frame.flags.writeable = True
 
                 # Convert the image color back so it can be displayed
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-                # print(results.pose_landmarks)
+                pose_landmarks = results.pose_landmarks
+
+                output_frame = frame.copy()
+                if pose_landmarks is not None:
+                    # Get landmarks.
+                    frame_height, frame_width = output_frame.shape[0], output_frame.shape[1]
+                    pose_landmarks = np.array([[lmk.x * frame_width, lmk.y * frame_height, lmk.z * frame_width]
+                                               for lmk in pose_landmarks.landmark], dtype=np.float32)
+                    assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(
+                        pose_landmarks.shape)
+
+                    # Classify the pose on the current frame.
+                    is_kicking = simple_threshold_classificator.is_kicking(pose_landmarks, unprocessed_frame)
 
                 mp_drawing.draw_landmarks(
-                    image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
+                    unprocessed_frame, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
                 mp_drawing.draw_landmarks(
-                    image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
+                    unprocessed_frame, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
                 mp_drawing.draw_landmarks(
-                    image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS)
+                    unprocessed_frame, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS)
 
                 end = time.time()
                 totalTime = end - start
 
                 fps = 1 / totalTime
-                cv2.putText(image, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
-                cv2.imshow(self.name, image)
+                cv2.putText(unprocessed_frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+
+                cv2.imshow(self.name, unprocessed_frame)
 
                 if cv2.waitKey(5) & 0xFF == 27:
                     break
