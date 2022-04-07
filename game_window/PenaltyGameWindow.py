@@ -20,6 +20,7 @@ class PenaltyGameWindow(threading.Thread):
         self._trigger_kick_video_flag = False
         self.current_cap = self.STANDBY_CAP
         self.shape = shape
+        self._is_animation_triggered_flag = False
 
     def run(self) -> None:
         self.is_running = True
@@ -27,20 +28,21 @@ class PenaltyGameWindow(threading.Thread):
         standby_cap = cv2.VideoCapture(self.standby_video_path)
         goal_cap = cv2.VideoCapture(self.goal_video_path)
         fail_cap = cv2.VideoCapture(self.fail_video_path)
+
         while self.is_running:
+            ret, frame = standby_cap.read()
             if self._trigger_kick_video_flag:
                 if self.success_counter == 0:
                     self.current_cap = self.FAIL_CAP
-                    ret, frame = fail_cap.read()
                     goal_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    self.show_video_uninterrupted(fail_cap)
                 else:
                     self.current_cap = self.GOAL_CAP
-                    ret, frame = goal_cap.read()
                     fail_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    self.show_video_uninterrupted(goal_cap)
                 standby_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             else:
                 self.current_cap = self.STANDBY_CAP
-                ret, frame = standby_cap.read()
 
             if ret:
                 resized_frame = cv2.resize(frame, self.shape, interpolation=cv2.INTER_AREA)
@@ -62,3 +64,13 @@ class PenaltyGameWindow(threading.Thread):
 
     def reset_kick_trigger(self):
         self._trigger_kick_video_flag = False
+
+    def show_video_uninterrupted(self, cv2_cap: cv2.VideoCapture):
+        while True:
+            ret, frame = cv2_cap.read()
+            if ret:
+                resized_frame = cv2.resize(frame, self.shape, interpolation=cv2.INTER_AREA)
+                cv2.imshow(self.name, resized_frame)
+                cv2.waitKey(5)
+            else:
+                break
