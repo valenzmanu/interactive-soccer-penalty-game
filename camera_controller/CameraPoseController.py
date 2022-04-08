@@ -21,14 +21,14 @@ class CameraPoseController(threading.Thread):
         self.class_name = 'kicking'
         self._is_kicking = False
         self.window_to_control = window_to_control
-        self.threshold_line_y = 440
+        self.threshold_line_y = 400
 
     def run(self) -> None:
         logging.info(f'Running {self.name}')
         logging.debug(f'Creating Mediapipe Objects')
         mp_drawing = mp.solutions.drawing_utils
         mp_holistic = mp.solutions.holistic
-        simple_threshold_classificator = SimpleThresholdPoseClassification(threshold_line_y=self.threshold_line_y)
+        simple_threshold_classificator = SimpleThresholdPoseClassification(threshold_y=self.threshold_line_y)
         logging.debug(f'Opening video capture from {self.camera_source}')
         cap = cv2.VideoCapture(self.camera_source)
 
@@ -67,7 +67,7 @@ class CameraPoseController(threading.Thread):
                         pose_landmarks.shape)
 
                     # Classify the pose on the current frame.
-                    self._is_kicking = simple_threshold_classificator.is_kicking(pose_landmarks, unprocessed_frame)
+                    self._is_kicking = simple_threshold_classificator.detect_kick(pose_landmarks, unprocessed_frame)
 
                     if self._is_kicking and self.window_to_control is not None:
                         logging.info(f'Triggering kick video')
