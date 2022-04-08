@@ -23,6 +23,8 @@ class PenaltyGameWindow(threading.Thread):
         self._is_animation_triggered_flag = False
 
     def run(self) -> None:
+        # TODO: Display high resolution videos in fullscreen
+        #  https://stackoverflow.com/questions/49949639/fullscreen-a-video-on-opencv
         self.is_running = True
         logging.info(f'Running {self.name}')
         standby_cap = cv2.VideoCapture(self.standby_video_path)
