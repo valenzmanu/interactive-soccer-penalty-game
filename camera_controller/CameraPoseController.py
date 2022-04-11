@@ -6,13 +6,13 @@ import cv2
 import mediapipe as mp
 import numpy as np
 
-from game_window.PenaltyGameWindow import PenaltyGameWindow
+from game_window.PenaltyGameWindow2 import PenaltyGameWindow2
 from pose_classification.simple_threshold_pose_classification import SimpleThresholdPoseClassification
 
 
 class CameraPoseController(threading.Thread):
 
-    def __init__(self, camera_source=0, window_to_control: PenaltyGameWindow = None):
+    def __init__(self, camera_source=0, window_to_control: PenaltyGameWindow2 = None):
         super().__init__()
         self.camera_source = camera_source
         self.is_running = False
@@ -24,6 +24,7 @@ class CameraPoseController(threading.Thread):
         self.threshold_line_y = 400
 
     def run(self) -> None:
+        self.is_running = True
         logging.info(f'Running {self.name}')
         logging.debug(f'Creating Mediapipe Objects')
         mp_drawing = mp.solutions.drawing_utils
@@ -36,7 +37,7 @@ class CameraPoseController(threading.Thread):
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5) as holistic:
 
-            while cap.isOpened():
+            while cap.isOpened() and self.is_running:
 
                 success, frame = cap.read()
                 unprocessed_frame = frame.copy()
