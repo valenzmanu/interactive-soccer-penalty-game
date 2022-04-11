@@ -40,7 +40,14 @@ class PenaltyGameWindow2:
 
         pygame.init()
         pygame.display.set_caption(self.readable_name)
-        self.screen = pygame.display.set_mode(self.window_size)
+
+        if self.fullscreen:
+            import ctypes
+            user32 = ctypes.windll.user32
+            self.window_size = (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode(self.window_size)
 
         # Flags
         self.animation_trigger_debounce_s = 3
