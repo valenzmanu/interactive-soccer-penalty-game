@@ -1,8 +1,11 @@
 import argparse
 import logging
 
+import pygame
+
 from camera_controller.CameraPoseController import CameraPoseController
 from game_window.PenaltyGameWindow import PenaltyGameWindow
+from game_window.PenaltyGameWindow2 import PenaltyGameWindow2
 
 
 def config_logging():
@@ -23,18 +26,25 @@ def main():
     else:
         camera_source = args.camera
 
-    penalty_game_window = PenaltyGameWindow(
-        standby_video_path="video_animations/penalty_standby.mp4",
-        goal_video_path="video_animations/penalty_goal.mp4",
-        fail_video_path="video_animations/penalty_fail.mp4"
+    penalty_game_window2 = PenaltyGameWindow2(
+        animations_paths=("video_animations/penalty_standby.mp4",
+                          "video_animations/penalty_goal.mp4")
     )
+
     camera_pose_controller = CameraPoseController(
         camera_source=camera_source,
-        window_to_control=penalty_game_window
+        window_to_control=penalty_game_window2
     )
 
     camera_pose_controller.start()
-    penalty_game_window.start()
+
+    while True:
+        penalty_game_window2.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                camera_pose_controller.stop()
+                logging.info(f'Stopping Game')
+                exit(0)
 
 
 if __name__ == "__main__":
