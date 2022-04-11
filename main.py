@@ -4,7 +4,6 @@ import logging
 import pygame
 
 from camera_controller.CameraPoseController import CameraPoseController
-from game_window.PenaltyGameWindow import PenaltyGameWindow
 from game_window.PenaltyGameWindow2 import PenaltyGameWindow2
 
 
@@ -28,7 +27,8 @@ def main():
 
     penalty_game_window2 = PenaltyGameWindow2(
         animations_paths=("video_animations/penalty_standby.mp4",
-                          "video_animations/penalty_goal.mp4")
+                          "video_animations/penalty_goal.mp4"),
+        fullscreen=False
     )
 
     camera_pose_controller = CameraPoseController(
