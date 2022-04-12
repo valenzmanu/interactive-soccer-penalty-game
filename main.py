@@ -27,7 +27,8 @@ def main():
 
     penalty_game_window2 = PenaltyGameWindow2(
         animations_paths=("video_animations/penalty_standby.mp4",
-                          "video_animations/penalty_goal.mp4"),
+                          "video_animations/penalty_goal.mp4",
+                          "video_animations/penalty_fail.mp4"),
         fullscreen=False
     )
 

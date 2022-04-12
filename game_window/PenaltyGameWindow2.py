@@ -60,7 +60,7 @@ class PenaltyGameWindow2:
         self.accuracy_bar = AccuracyMovingBar(
             base_image_path="game_icons/accuracy_bar.png",
             moving_object_image_path="game_icons/accuracy_bar_moving_circle.png",
-            velocity=4,
+            velocity=5,
             window_size=self.window_size
         )
 
@@ -97,9 +97,13 @@ class PenaltyGameWindow2:
             return
 
     def trigger_kick_video(self):
-        logging.info("Triggering Kick Video")
+        region = self.accuracy_bar.get_moving_object_region()
+        logging.info(f"Triggering Kick Video. Ball in region {region}")
         if self.animation_is_finished:
-            self.current_animation_index = 1
+            if region == self.accuracy_bar.GREEN:
+                self.current_animation_index = 1
+            else:
+                self.current_animation_index = 2
             self.animation_is_finished = False
 
     @staticmethod

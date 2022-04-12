@@ -1,9 +1,22 @@
+import logging
+
 import pygame
 
 
 class AccuracyMovingBar:
     DOWN = 1
     UP = -1
+
+    INVALID_REGION = -1
+    RED = 1
+    YELLOW = 2
+    GREEN = 3
+
+    RED_REGION_UP = (100, 140)
+    YELLOW_REGION_UP = (141, 199)
+    GREEN_REGION = (200, 266)
+    YELLOW_REGION_DOWN = (267, 325)
+    RED_REGION_DOWN = (326, 366)
 
     def __init__(self, base_image_path: str, moving_object_image_path: str, velocity: int, window_size: tuple):
         # Base Image
@@ -64,3 +77,18 @@ class AccuracyMovingBar:
         position = moving_object.get_rect()
         self.current_y_position = self.current_y_position - self.velocity
         return position.move(0, self.current_y_position)
+
+    def get_moving_object_region(self) -> int:
+        if self.RED_REGION_UP[0] <= self.current_y_position <= self.RED_REGION_UP[1]:
+            return self.RED
+        elif self.YELLOW_REGION_UP[0] <= self.current_y_position <= self.YELLOW_REGION_UP[1]:
+            return self.YELLOW
+        elif self.GREEN_REGION[0] <= self.current_y_position <= self.GREEN_REGION[1]:
+            return self.GREEN
+        elif self.YELLOW_REGION_DOWN[0] <= self.current_y_position <= self.YELLOW_REGION_DOWN[1]:
+            return self.YELLOW
+        elif self.RED_REGION_DOWN[0] <= self.current_y_position <= self.RED_REGION_DOWN[1]:
+            return self.RED
+        else:
+            logging.warning(f'Moving object should be inside a region. Y pos: {self.current_y_position}')
+            return self.INVALID_REGION
