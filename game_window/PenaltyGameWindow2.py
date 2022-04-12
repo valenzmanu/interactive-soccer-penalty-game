@@ -5,6 +5,8 @@ import cv2
 import numpy as np
 import pygame
 
+from game_objects.AccuracyMovingBar import AccuracyMovingBar
+
 
 class PenaltyGameWindow2:
     DEFAULT_ANIMATION = 0
@@ -54,11 +56,21 @@ class PenaltyGameWindow2:
         self.last_animation_trigger_time = 0
         self.new_trigger = False
 
+        # Moving Objects
+        self.accuracy_bar = AccuracyMovingBar(
+            base_image_path="game_icons/accuracy_bar.png",
+            moving_object_image_path="game_icons/accuracy_bar_moving_circle.png",
+            velocity=4,
+            window_size=self.window_size
+        )
+
     def update(self) -> None:
         ret, frame = self.get_frame_to_show()
         resized_frame = cv2.resize(frame, self.window_size, interpolation=cv2.INTER_AREA)
         pygame_surface = self.cv2_to_pygame(resized_frame)
         self.screen.blit(pygame_surface, [0, 0])
+        self.accuracy_bar.update(self.screen)
+        pygame.display.update()
         pygame.display.flip()
 
     def get_frame_to_show(self):
