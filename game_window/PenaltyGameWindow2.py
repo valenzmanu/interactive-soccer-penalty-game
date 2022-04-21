@@ -98,6 +98,8 @@ class PenaltyGameWindow2:
 
     def trigger_kick_video(self):
         region = self.accuracy_bar.get_moving_object_region()
+        position = self.accuracy_bar.get_current_y_position()
+        self.accuracy_bar.pause(pause_time_s=2.5)
         logging.info(f"Triggering Kick Video. Ball in region {region}")
         if self.animation_is_finished:
             if region == self.accuracy_bar.GREEN:
