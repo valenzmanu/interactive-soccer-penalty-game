@@ -1,6 +1,8 @@
 import logging
 
 import pygame
+import time
+from threading import Timer
 
 
 class AccuracyMovingBar:
@@ -32,6 +34,7 @@ class AccuracyMovingBar:
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
+        self._moving_object_is_paused = False
         self.velocity = velocity
         self._current_velocity_direction = 1
         self.upper_limit = self._base_image_origin[1]
@@ -44,7 +47,20 @@ class AccuracyMovingBar:
         _base_image = pygame.image.load(self.base_image_path)
         _moving_object_image = pygame.image.load(self.moving_object_image_path)
 
+    def _update_paused(self, y_position: int, screen: pygame.surface):
+        position = self._moving_object_image.get_rect()
+        position.y = y_position
+        position.x = self._base_image_origin[0] - 5
+        screen.blit(self._base_image, self._base_image_origin)
+        screen.blit(self._moving_object_image, position)
+        pygame.display.update()
+
     def update(self, screen: pygame.Surface):
+
+        if self._moving_object_is_paused:
+            self._update_paused(self.current_y_position, screen)
+            return
+
         screen.blit(self._base_image, self._base_image_origin)
         position = self._moving_object_image.get_rect()
 
@@ -77,6 +93,17 @@ class AccuracyMovingBar:
         position = moving_object.get_rect()
         self.current_y_position = self.current_y_position - self.velocity
         return position.move(0, self.current_y_position)
+
+    def get_current_y_position(self):
+        return self.current_y_position
+
+    def pause(self, pause_time_s=3):
+        self._moving_object_is_paused = True
+        _pause_timer = Timer(pause_time_s, self.reset_pause_flag)
+        _pause_timer.start()
+
+    def reset_pause_flag(self):
+        self._moving_object_is_paused = False
 
     def get_moving_object_region(self) -> int:
         if self.RED_REGION_UP[0] <= self.current_y_position <= self.RED_REGION_UP[1]:
