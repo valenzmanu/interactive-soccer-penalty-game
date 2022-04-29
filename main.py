@@ -25,10 +25,12 @@ def main():
     else:
         camera_source = args.camera
 
+    resize_factor = 1
     penalty_game_window2 = PenaltyGameWindow2(
-        animations_paths=("video_animations/penalty_standby.mp4",
-                          "video_animations/penalty_goal.mp4",
-                          "video_animations/penalty_fail.mp4"),
+        animations_paths=("video_animations/GPO-ESTAS-LISTO.mp4",
+                          "video_animations/GPO-GOL-SHORT.mp4",
+                          "video_animations/GPO-FALLA-PENAL-SHORT.mp4"),
+        window_size=(resize_factor * 240, resize_factor * 210),
         fullscreen=False
     )
 
