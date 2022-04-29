@@ -90,7 +90,7 @@ class CameraPoseController(threading.Thread):
 
                 cv2.imshow(self.name, unprocessed_frame)
 
-                if cv2.waitKey(5) & 0xFF == 27:
+                if cv2.waitKey(1) & 0xFF == 27:
                     break
 
     def stop(self):

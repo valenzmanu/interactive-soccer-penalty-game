@@ -4,6 +4,7 @@ import time
 import cv2
 import numpy as np
 import pygame
+import random
 
 from game_objects.AccuracyMovingBar import AccuracyMovingBar
 
@@ -58,8 +59,8 @@ class PenaltyGameWindow2:
 
         # Moving Objects
         self.accuracy_bar = AccuracyMovingBar(
-            base_image_path="game_icons/accuracy_bar.png",
-            moving_object_image_path="game_icons/accuracy_bar_moving_circle.png",
+            base_image_path="game_icons/accuracy_bar_degradated.png",
+            moving_object_image_path="game_icons/accuracy_bar_moving_circle_degradated.png",
             velocity=5,
             window_size=self.window_size
         )
@@ -76,7 +77,7 @@ class PenaltyGameWindow2:
     def get_frame_to_show(self):
         capture = self.caps[self.current_animation_index]
         ret, frame = capture.read()
-        cv2.waitKey(5)
+        cv2.waitKey(1)
 
         if self.video_ended(ret):
             # First reset the video that just ended
@@ -98,12 +99,13 @@ class PenaltyGameWindow2:
 
     def trigger_kick_video(self):
         region = self.accuracy_bar.get_moving_object_region()
-        position = self.accuracy_bar.get_current_y_position()
-        self.accuracy_bar.pause(pause_time_s=2.5)
+        self.accuracy_bar.pause(pause_time_s=9)
         logging.info(f"Triggering Kick Video. Ball in region {region}")
         if self.animation_is_finished:
             if region == self.accuracy_bar.GREEN:
                 self.current_animation_index = 1
+            elif region == self.accuracy_bar.YELLOW:
+                self.current_animation_index = random.randint(1, 2)
             else:
                 self.current_animation_index = 2
             self.animation_is_finished = False

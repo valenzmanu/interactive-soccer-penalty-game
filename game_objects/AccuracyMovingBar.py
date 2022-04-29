@@ -24,13 +24,13 @@ class AccuracyMovingBar:
         # Base Image
         self.base_image_path = base_image_path
         self.moving_object_image_path = moving_object_image_path
-        self._base_image_dimensions = (30, 300)
+        self._base_image_dimensions = (15, 90)
         self._base_image = pygame.image.load(self.base_image_path)
         self._base_image = pygame.transform.scale(self._base_image, self._base_image_dimensions)
-        self._base_image_origin = (20, 100)
+        self._base_image_origin = (5, 60)
 
         # Moving Circle
-        self._moving_object_image_dimensions = (40, 40)
+        self._moving_object_image_dimensions = (15, 15)
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
@@ -38,7 +38,7 @@ class AccuracyMovingBar:
         self.velocity = velocity
         self._current_velocity_direction = 1
         self.upper_limit = self._base_image_origin[1]
-        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - 35
+        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - 15
         print("upper_limit", self.upper_limit)
         print("lower_limit", self.lower_limit)
         self.current_y_position = int(self.lower_limit - self.upper_limit / 2)
@@ -80,7 +80,7 @@ class AccuracyMovingBar:
             position = self.move_object_up(self._moving_object_image)
 
         self.current_y_position = position.y
-        position.x = self._base_image_origin[0] - 5
+        position.x = self._base_image_origin[0] - 0
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
 

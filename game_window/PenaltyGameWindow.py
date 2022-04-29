@@ -57,7 +57,7 @@ class PenaltyGameWindow(threading.Thread):
             if ret:
                 resized_frame = cv2.resize(frame, self.shape, interpolation=cv2.INTER_AREA)
                 cv2.imshow(self.name, resized_frame)
-                if cv2.waitKey(5) & 0xFF == 27:
+                if cv2.waitKey(1) & 0xFF == 27:
                     self.is_running = False
                     logging.info(f'quit command received, {self.name} will stop.')
 
