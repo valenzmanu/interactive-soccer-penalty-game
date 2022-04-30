@@ -21,7 +21,15 @@ class CameraPoseController(threading.Thread):
         self.class_name = 'kicking'
         self._is_kicking = False
         self.window_to_control = window_to_control
-        self.threshold_line_y = 400
+        self.threshold_line_y = 285
+        self.person_roi_w = 500
+        self.person_roi_h = 2000
+
+    def get_person_roi(self, frame):
+        height, width, channels = frame.shape
+        y = self.threshold_line_y + 100
+        x = int(width - self.person_roi_w / 2)
+        return frame[y-self.person_roi_h:y, x:x+self.person_roi_w]
 
     def run(self) -> None:
         self.is_running = True
@@ -39,13 +47,14 @@ class CameraPoseController(threading.Thread):
 
             while cap.isOpened() and self.is_running:
 
-                success, frame = cap.read()
+                success, _frame = cap.read()
+                frame = self.get_person_roi(_frame)
                 unprocessed_frame = frame.copy()
                 start = time.time()
 
                 # To improve performance, optionally mark the image as not writeable to
                 # pass by reference.
-                frame.flags.writeable = False
+                #frame.flags.writeable = False
 
                 # Process the image and detect the holistic
                 results = holistic.process(frame)
@@ -87,6 +96,11 @@ class CameraPoseController(threading.Thread):
                 fps = 1 / totalTime
                 cv2.putText(unprocessed_frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0),
                             2)
+
+                thickness = 2
+                height, width, channels = frame.shape
+                cv2.line(unprocessed_frame, (0, self.threshold_line_y), (width, self.threshold_line_y), (0, 255, 0),
+                         thickness=thickness)
 
                 cv2.imshow(self.name, unprocessed_frame)
 

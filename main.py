@@ -30,7 +30,7 @@ def main():
         animations_paths=("video_animations/GPO-ESTAS-LISTO.mp4",
                           "video_animations/GPO-GOL-SHORT.mp4",
                           "video_animations/GPO-FALLA-PENAL-SHORT.mp4"),
-        window_size=(resize_factor * 240, resize_factor * 210),
+        window_size=(resize_factor * 270, resize_factor * 210),
         fullscreen=False
     )
 
