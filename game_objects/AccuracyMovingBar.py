@@ -14,11 +14,11 @@ class AccuracyMovingBar:
     YELLOW = 2
     GREEN = 3
 
-    RED_REGION_UP = (100, 140)
-    YELLOW_REGION_UP = (141, 199)
-    GREEN_REGION = (200, 266)
-    YELLOW_REGION_DOWN = (267, 325)
-    RED_REGION_DOWN = (326, 366)
+    RED_REGION_UP = (60, 80)
+    YELLOW_REGION_UP = (81, 100)
+    GREEN_REGION = (101, 120)
+    YELLOW_REGION_DOWN = (121, 140)
+    RED_REGION_DOWN = (141, 160)
 
     def __init__(self, base_image_path: str, moving_object_image_path: str, velocity: int, window_size: tuple):
         # Base Image
@@ -50,7 +50,7 @@ class AccuracyMovingBar:
     def _update_paused(self, y_position: int, screen: pygame.surface):
         position = self._moving_object_image.get_rect()
         position.y = y_position
-        position.x = self._base_image_origin[0] - 5
+        position.x = self._base_image_origin[0]
         screen.blit(self._base_image, self._base_image_origin)
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
@@ -80,7 +80,7 @@ class AccuracyMovingBar:
             position = self.move_object_up(self._moving_object_image)
 
         self.current_y_position = position.y
-        position.x = self._base_image_origin[0] - 0
+        position.x = self._base_image_origin[0]
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
 

@@ -4,3 +4,5 @@ camera_controller/__pycache__/
 game_window/__pycache__/
 
 game_objects/__pycache__/
+
+pose_classification/__pycache__/

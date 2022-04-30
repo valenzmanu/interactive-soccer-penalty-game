@@ -13,9 +13,6 @@ class SimpleThresholdPoseClassification:
 
     def is_kicking(self, pose_landmarks, frame) -> bool:
         height, width, channels = frame.shape
-        if frame is not None:
-            thickness = 2
-            cv2.line(frame, (0, self.threshold_y), (width, self.threshold_y), (0, 255, 0), thickness=thickness)
         left_foot_y = pose_landmarks[self.LEFT_FOOT_INDEX, 1]
         right_foot_y = pose_landmarks[self.RIGHT_FOOT_INDEX, 1]
         is_kicking = False
