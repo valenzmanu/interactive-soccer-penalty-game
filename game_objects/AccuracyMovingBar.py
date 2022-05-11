@@ -14,23 +14,25 @@ class AccuracyMovingBar:
     YELLOW = 2
     GREEN = 3
 
-    RED_REGION_UP = (60, 80)
-    YELLOW_REGION_UP = (81, 100)
-    GREEN_REGION = (101, 120)
-    YELLOW_REGION_DOWN = (121, 140)
-    RED_REGION_DOWN = (141, 160)
+    Y_OFFSET = 3 * 210
+    RED_REGION_UP = (0, 214)
+    YELLOW_REGION_UP = (215, 264)
+    GREEN_REGION = (265, 365)
+    YELLOW_REGION_DOWN = (366, 415)
+    RED_REGION_DOWN = (416, 630)
 
     def __init__(self, base_image_path: str, moving_object_image_path: str, velocity: int, window_size: tuple):
         # Base Image
         self.base_image_path = base_image_path
         self.moving_object_image_path = moving_object_image_path
-        self._base_image_dimensions = (15, 90)
+        resize_factor = 3
+        self._base_image_dimensions = (resize_factor * 15, resize_factor * 90 + 150)
         self._base_image = pygame.image.load(self.base_image_path)
         self._base_image = pygame.transform.scale(self._base_image, self._base_image_dimensions)
-        self._base_image_origin = (5, 60)
+        self._base_image_origin = (5, resize_factor * 60 - 80)
 
         # Moving Circle
-        self._moving_object_image_dimensions = (15, 15)
+        self._moving_object_image_dimensions = (resize_factor * 15, resize_factor * 15)
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
@@ -38,7 +40,8 @@ class AccuracyMovingBar:
         self.velocity = velocity
         self._current_velocity_direction = 1
         self.upper_limit = self._base_image_origin[1]
-        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - 15
+        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - \
+                           self._moving_object_image_dimensions[1]
         print("upper_limit", self.upper_limit)
         print("lower_limit", self.lower_limit)
         self.current_y_position = int(self.lower_limit - self.upper_limit / 2)

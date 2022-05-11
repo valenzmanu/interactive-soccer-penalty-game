@@ -21,7 +21,7 @@ class CameraPoseController(threading.Thread):
         self.class_name = 'kicking'
         self._is_kicking = False
         self.window_to_control = window_to_control
-        self.threshold_line_y = 285
+        self.threshold_line_y = 400
         self.person_roi_w = 500
         self.person_roi_h = 2000
 
@@ -48,7 +48,8 @@ class CameraPoseController(threading.Thread):
             while cap.isOpened() and self.is_running:
 
                 success, _frame = cap.read()
-                frame = self.get_person_roi(_frame)
+                # frame = self.get_person_roi(_frame)
+                frame = _frame
                 unprocessed_frame = frame.copy()
                 start = time.time()
 

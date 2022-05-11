@@ -25,7 +25,7 @@ def main():
     else:
         camera_source = args.camera
 
-    resize_factor = 1
+    resize_factor = 3
     penalty_game_window2 = PenaltyGameWindow2(
         animations_paths=("video_animations/GPO-ESTAS-LISTO.mp4",
                           "video_animations/GPO-GOL-SHORT.mp4",

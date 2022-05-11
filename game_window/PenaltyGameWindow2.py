@@ -61,7 +61,7 @@ class PenaltyGameWindow2:
         self.accuracy_bar = AccuracyMovingBar(
             base_image_path="game_icons/accuracy_bar_degradated.png",
             moving_object_image_path="game_icons/accuracy_bar_moving_circle_degradated.png",
-            velocity=2,
+            velocity=7,
             window_size=self.window_size
         )
 
