@@ -24,13 +24,14 @@ class AccuracyMovingBar:
         # Base Image
         self.base_image_path = base_image_path
         self.moving_object_image_path = moving_object_image_path
-        self._base_image_dimensions = (15, 90)
+        self._base_image_dimensions = ((1 / 18) * window_size[0], (3 / 7) * window_size[1])
         self._base_image = pygame.image.load(self.base_image_path)
         self._base_image = pygame.transform.scale(self._base_image, self._base_image_dimensions)
-        self._base_image_origin = (5, 60)
+        self._base_image_origin = ((1 / 54) * window_size[0], (2 / 7) * window_size[1])
 
         # Moving Circle
-        self._moving_object_image_dimensions = (15, 15)
+        base_image_width = self._base_image_dimensions[0]
+        self._moving_object_image_dimensions = (base_image_width, base_image_width)
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
@@ -38,10 +39,26 @@ class AccuracyMovingBar:
         self.velocity = velocity
         self._current_velocity_direction = 1
         self.upper_limit = self._base_image_origin[1]
-        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - 15
-        print("upper_limit", self.upper_limit)
-        print("lower_limit", self.lower_limit)
+        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - base_image_width
+        print("********** Bar Limits **********")
+        print("upper_limit:", self.upper_limit)
+        print("lower_limit:", self.lower_limit)
         self.current_y_position = int(self.lower_limit - self.upper_limit / 2)
+
+        # Bar Regions
+        y_offset = self._base_image_origin[1]
+        bar_y_size = self._base_image_dimensions[1]
+        self.red_region_up = (y_offset, y_offset + 0.2 * bar_y_size)
+        self.yellow_region_up = (y_offset + 0.2 * bar_y_size, y_offset + 0.4 * bar_y_size)
+        self.green_region = (y_offset + 0.4 * bar_y_size, y_offset + 0.6 * bar_y_size)
+        self.yellow_region_down = (y_offset + 0.6 * bar_y_size, y_offset + 0.8 * bar_y_size)
+        self.red_region_down = (y_offset + 0.8 * bar_y_size, y_offset + bar_y_size)
+        print("********** Bar Regions **********")
+        print("red_region_up:", self.red_region_up)
+        print("yellow_region_up:", self.yellow_region_up)
+        print("green_region:", self.green_region)
+        print("yellow_region_down:", self.yellow_region_down)
+        print("red_region_down:", self.red_region_down)
 
     def start(self):
         _base_image = pygame.image.load(self.base_image_path)
@@ -106,15 +123,15 @@ class AccuracyMovingBar:
         self._moving_object_is_paused = False
 
     def get_moving_object_region(self) -> int:
-        if self.RED_REGION_UP[0] <= self.current_y_position <= self.RED_REGION_UP[1]:
+        if self.red_region_up[0] < self.current_y_position <= self.red_region_up[1]:
             return self.RED
-        elif self.YELLOW_REGION_UP[0] <= self.current_y_position <= self.YELLOW_REGION_UP[1]:
+        elif self.yellow_region_up[0] < self.current_y_position <= self.yellow_region_up[1]:
             return self.YELLOW
-        elif self.GREEN_REGION[0] <= self.current_y_position <= self.GREEN_REGION[1]:
+        elif self.green_region[0] <= self.current_y_position <= self.green_region[1]:
             return self.GREEN
-        elif self.YELLOW_REGION_DOWN[0] <= self.current_y_position <= self.YELLOW_REGION_DOWN[1]:
+        elif self.yellow_region_down[0] <= self.current_y_position < self.yellow_region_down[1]:
             return self.YELLOW
-        elif self.RED_REGION_DOWN[0] <= self.current_y_position <= self.RED_REGION_DOWN[1]:
+        elif self.red_region_down[0] <= self.current_y_position < self.red_region_down[1]:
             return self.RED
         else:
             logging.warning(f'Moving object should be inside a region. Y pos: {self.current_y_position}')

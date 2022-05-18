@@ -48,9 +48,10 @@ class PenaltyGameWindow2:
             import ctypes
             user32 = ctypes.windll.user32
             self.window_size = (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.fake_screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode(self.window_size)
+            self.fake_screen = self.screen.copy()
 
         # Flags
         self.animation_trigger_debounce_s = 3
@@ -69,8 +70,9 @@ class PenaltyGameWindow2:
         ret, frame = self.get_frame_to_show()
         resized_frame = cv2.resize(frame, self.window_size, interpolation=cv2.INTER_AREA)
         pygame_surface = self.cv2_to_pygame(resized_frame)
-        self.screen.blit(pygame_surface, [0, 0])
-        self.accuracy_bar.update(self.screen)
+        self.fake_screen.blit(pygame_surface, [0, 0])
+        self.accuracy_bar.update(self.fake_screen)
+        self.screen.blit(pygame.transform.scale(self.fake_screen, self.window_size), (0, 0))
         pygame.display.update()
         pygame.display.flip()
 
