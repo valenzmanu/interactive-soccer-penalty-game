@@ -4,6 +4,7 @@ import logging
 import pygame
 
 from camera_controller.CameraPoseController import CameraPoseController
+from config_file_reader.ConfigFileReader import ConfigFileReader
 from game_window.PenaltyGameWindow2 import PenaltyGameWindow2
 
 
@@ -25,15 +26,8 @@ def main():
     else:
         camera_source = args.camera
 
-    resize_factor = 1
-    penalty_game_window2 = PenaltyGameWindow2(
-        animations_paths=("video_animations/GPO-ESTAS-LISTO.mp4",
-                          "video_animations/GPO-GOL-SHORT.mp4",
-                          "video_animations/GPO-FALLA-PENAL-SHORT.mp4"),
-        window_size=(resize_factor * 270, resize_factor * 210),
-        window_start_position=(850, 600),
-        fullscreen=False
-    )
+    game_window_kwargs = ConfigFileReader.read_game_window_configs()
+    penalty_game_window2 = PenaltyGameWindow2(**game_window_kwargs)
 
     camera_pose_controller = CameraPoseController(
         camera_source=camera_source,

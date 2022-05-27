@@ -54,8 +54,8 @@ class PenaltyGameWindow2:
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             self.fake_screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
-            self.position = 200, 200
-            os.environ['SDL_VIDEO_WINDOW_POS'] = str(self.position[0]) + "," + str(self.position[1])
+            os.environ['SDL_VIDEO_WINDOW_POS'] = str(self.window_start_position[0]) + "," + str(
+                self.window_start_position[1])
             self.screen = pygame.display.set_mode(self.window_size)
             self.fake_screen = self.screen.copy()
 
