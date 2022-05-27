@@ -31,6 +31,7 @@ def main():
                           "video_animations/GPO-GOL-SHORT.mp4",
                           "video_animations/GPO-FALLA-PENAL-SHORT.mp4"),
         window_size=(resize_factor * 270, resize_factor * 210),
+        window_start_position=(850, 600),
         fullscreen=False
     )
 

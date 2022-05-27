@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import pygame
 import random
+import os
 
 from game_objects.AccuracyMovingBar import AccuracyMovingBar
 
@@ -12,7 +13,8 @@ from game_objects.AccuracyMovingBar import AccuracyMovingBar
 class PenaltyGameWindow2:
     DEFAULT_ANIMATION = 0
 
-    def __init__(self, animations_paths: tuple, window_size: tuple = (640, 480), fullscreen: bool = False):
+    def __init__(self, animations_paths: tuple, window_size: tuple = (640, 480), window_start_position=(500, 500),
+                 fullscreen: bool = False):
         """
 
         :param animations_paths: A tuple with the paths to video animations to play when a trigger event occurs. The animation with index 0 is the default animation
@@ -23,6 +25,7 @@ class PenaltyGameWindow2:
         self.window_size = window_size
         self.fullscreen = fullscreen
         self.is_active = True
+        self.window_start_position = window_start_position
 
         # Media Configs
         self.fps = 30
@@ -48,8 +51,11 @@ class PenaltyGameWindow2:
             import ctypes
             user32 = ctypes.windll.user32
             self.window_size = (user32.GetSystemMetrics(0), user32.GetSystemMetrics(1))
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             self.fake_screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
+            self.position = 200, 200
+            os.environ['SDL_VIDEO_WINDOW_POS'] = str(self.position[0]) + "," + str(self.position[1])
             self.screen = pygame.display.set_mode(self.window_size)
             self.fake_screen = self.screen.copy()
 
