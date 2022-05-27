@@ -11,7 +11,7 @@ class ConfigFileReader:
                                                    "video_animations/GPO-GOL-SHORT.mp4",
                                                    "video_animations/GPO-FALLA-PENAL-SHORT.mp4"),
                               "window_size": (270, 210),
-                              "window_start_position": (800, 800),
+                              "window_start_position": (100, 100),
                               "fullscreen": False}
         try:
             config = configparser.ConfigParser()
