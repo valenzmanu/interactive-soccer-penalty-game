@@ -1,5 +1,6 @@
 import configparser
 import logging
+import os
 
 
 class ConfigFileReader:
@@ -16,6 +17,10 @@ class ConfigFileReader:
         try:
             config = configparser.ConfigParser()
             config.read(cls.CONFIG_FILE)
+            
+            if cls.CONFIG_FILE not in os.listdir():
+                logging.warning(f'{cls.CONFIG_FILE} not found. Using default config: {game_window_config}')
+                return game_window_config
 
             if "game-window" in config:
                 game_window_config_items = config["game-window"]
