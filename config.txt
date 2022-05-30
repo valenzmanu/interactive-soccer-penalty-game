@@ -1,0 +1,15 @@
+[game-window]
+start-position-x=300
+start-position-y=300
+window-width=270
+window-height=210
+window-scale-factor=2
+fullscreen=False
+
+[video-animations]
+ready-animation=video_animations/GPO-ESTAS-LISTO.mp4
+goal-animation=video_animations/GPO-GOL-SHORT.mp4
+fail-animation=video_animations/GPO-FALLA-PENAL-SHORT.mp4
+
+[camera]
+trigger-line=400

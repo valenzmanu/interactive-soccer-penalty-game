@@ -1,5 +1,7 @@
 import logging
 import threading
+import pygame
+import numpy as np
 
 import cv2
 
@@ -21,6 +23,12 @@ class PenaltyGameWindow(threading.Thread):
         self.current_cap = self.STANDBY_CAP
         self.shape = shape
         self._is_animation_triggered_flag = False
+
+        # Pygame Stuff
+        # Pygame Stuff
+        pygame.init()
+        pygame.display.set_caption(self.name)
+        self.pygame_screen = pygame.display.set_mode(self.shape)
 
     def run(self) -> None:
         # TODO: Display high resolution videos in fullscreen
@@ -49,9 +57,14 @@ class PenaltyGameWindow(threading.Thread):
             if ret:
                 resized_frame = cv2.resize(frame, self.shape, interpolation=cv2.INTER_AREA)
                 cv2.imshow(self.name, resized_frame)
-                if cv2.waitKey(5) & 0xFF == 27:
+                if cv2.waitKey(1) & 0xFF == 27:
                     self.is_running = False
                     logging.info(f'quit command received, {self.name} will stop.')
+
+                pygame_frame = self.cv2_to_pygame(resized_frame)
+                self.pygame_screen.blit(pygame_frame, [0, 0])
+                pygame.display.flip()
+
             else:
                 self.reset_kick_trigger()
                 standby_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
@@ -76,3 +89,11 @@ class PenaltyGameWindow(threading.Thread):
                 cv2.waitKey(5)
             else:
                 break
+
+    @staticmethod
+    def cv2_to_pygame(cv2_frame: np.ndarray) -> pygame.Surface:
+        pygame_frame = cv2.cvtColor(cv2_frame, cv2.COLOR_BGR2RGB)
+        pygame_frame = np.fliplr(pygame_frame)
+        pygame_frame = np.rot90(pygame_frame)
+        pygame_frame = pygame.surfarray.make_surface(pygame_frame)
+        return pygame_frame
