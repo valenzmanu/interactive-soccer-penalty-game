@@ -15,25 +15,21 @@ def config_logging():
 
 
 def main():
-    parser = argparse.ArgumentParser(prog='main')
-    parser.add_argument('-c', '--camera', type=int, default=0, help='Camera port number', required=False)
-    parser.add_argument('-s', '--stream', help='RTSP Stream url')
-    args = parser.parse_args()
+
     config_logging()
-
-    if args.stream:
-        camera_source = args.stream
-    else:
-        camera_source = args.camera
-
     game_window_kwargs = ConfigFileReader.read_game_window_configs()
     penalty_game_window2 = PenaltyGameWindow2(**game_window_kwargs)
 
+    camera_source = ConfigFileReader.read_camera_source()
+    show_camera_window = ConfigFileReader.read_show_camera_window()
     camera_pose_controller = CameraPoseController(
         camera_source=camera_source,
-        window_to_control=penalty_game_window2
+        window_to_control=penalty_game_window2,
+        show_camera_window=show_camera_window
     )
 
+    camera_configs_kwargs = ConfigFileReader.read_camera_roi_configs()
+    camera_pose_controller.set_camera_configs(**camera_configs_kwargs)
     camera_pose_controller.start()
 
     while True:

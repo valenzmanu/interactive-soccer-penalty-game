@@ -7,6 +7,67 @@ class ConfigFileReader:
     CONFIG_FILE = "config.txt"
 
     @classmethod
+    def read_show_camera_window(cls) -> bool:
+        show_camera_window = True
+        try:
+            config = configparser.ConfigParser()
+            config.read(cls.CONFIG_FILE)
+            if cls.CONFIG_FILE not in os.listdir():
+                logging.warning(f'{cls.CONFIG_FILE} not found. Using default source={show_camera_window}')
+                return show_camera_window
+            if "camera" in config:
+                show_camera_window = config["camera"]["show-camera-window"] == "True"
+                logging.info(f'Successfully read show_camera_window={show_camera_window}')
+                return show_camera_window
+        except Exception as ex:
+            logging.error(f'Unable to read camera source: {ex}. Using default source={show_camera_window}')
+        return show_camera_window
+
+    @classmethod
+    def read_camera_source(cls) -> int:
+        source = 0
+        try:
+            config = configparser.ConfigParser()
+            config.read(cls.CONFIG_FILE)
+            if cls.CONFIG_FILE not in os.listdir():
+                logging.warning(f'{cls.CONFIG_FILE} not found. Using default source={source}')
+                return source
+            if "camera" in config:
+                source = int(config["camera"]["source"])
+                logging.info(f'Successfully read source={source}')
+                return source
+        except Exception as ex:
+            logging.error(f'Unable to read camera source: {ex}. Using default source={source}')
+        return source
+
+    @classmethod
+    def read_camera_roi_configs(cls) -> dict:
+        roi_configs = {"person_roi_w": 400,
+                       "person_roi_h": 400,
+                       "threshold_line_y": 350}
+
+        try:
+            config = configparser.ConfigParser()
+            config.read(cls.CONFIG_FILE)
+            if cls.CONFIG_FILE not in os.listdir():
+                logging.warning(f'{cls.CONFIG_FILE} not found. Using default config: {roi_configs}')
+                return roi_configs
+            if "camera" in config:
+                roi_configs["person_roi_w"] = int(config["camera"]["person-roi-w"])
+                roi_configs["person_roi_h"] = int(config["camera"]["person-roi-h"])
+                roi_configs["threshold_line_y"] = int(config["camera"]["threshold-line-y"])
+                logging.info(f"Successfully read camera ROI configs: {roi_configs}")
+            else:
+                logging.warning(f"camera section not present in {cls.CONFIG_FILE}. Using default config: {roi_configs}")
+
+            return roi_configs
+
+        except Exception as ex:
+            logging.error(f'Unable to read camera ROI config: {ex}')
+
+        return roi_configs
+
+    @classmethod
     def read_game_window_configs(cls) -> dict:
         game_window_config = {"animations_paths": ("video_animations/GPO-ESTAS-LISTO.mp4",
                                                    "video_animations/GPO-GOL-SHORT.mp4",
@@ -17,7 +78,7 @@ class ConfigFileReader:
         try:
             config = configparser.ConfigParser()
             config.read(cls.CONFIG_FILE)
-            
+
             if cls.CONFIG_FILE not in os.listdir():
                 logging.warning(f'{cls.CONFIG_FILE} not found. Using default config: {game_window_config}')
                 return game_window_config

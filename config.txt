@@ -12,4 +12,8 @@ goal-animation=video_animations/GPO-GOL-SHORT.mp4
 fail-animation=video_animations/GPO-FALLA-PENAL-SHORT.mp4
 
 [camera]
-trigger-line=400
+source=0
+person-roi-w=580
+person-roi-h=480
+threshold-line-y=350
+show-camera-window=True

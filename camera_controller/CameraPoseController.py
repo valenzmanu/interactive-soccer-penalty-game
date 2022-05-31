@@ -12,7 +12,7 @@ from pose_classification.simple_threshold_pose_classification import SimpleThres
 
 class CameraPoseController(threading.Thread):
 
-    def __init__(self, camera_source=0, window_to_control: PenaltyGameWindow2 = None):
+    def __init__(self, camera_source=0, window_to_control: PenaltyGameWindow2 = None, show_camera_window=True):
         super().__init__()
         self.camera_source = camera_source
         self.is_running = False
@@ -21,15 +21,38 @@ class CameraPoseController(threading.Thread):
         self.class_name = 'kicking'
         self._is_kicking = False
         self.window_to_control = window_to_control
-        self.threshold_line_y = 285
-        self.person_roi_w = 500
-        self.person_roi_h = 2000
+        self.threshold_line_y = 350
+        self.person_roi_w = 400
+        self.person_roi_h = 400
+        self._person_roi_w_half = int(self.person_roi_w / 2)
+        self._person_roi_h_half = int(self.person_roi_h / 2)
+        self.frame_shape = None
+        self.frame_center = None
+        self.frame_shape_is_set = False
+        self.show_camera_window = show_camera_window
+
+    def set_camera_configs(self, person_roi_w: int, person_roi_h: int, threshold_line_y: int) -> None:
+        self.person_roi_w = person_roi_w
+        self.person_roi_h = person_roi_h
+        self.threshold_line_y = threshold_line_y
+        self._person_roi_w_half = int(self.person_roi_w / 2)
+        self._person_roi_h_half = int(self.person_roi_h / 2)
+
+    def set_frame_shape(self, frame_shape: tuple):
+        self.frame_shape = frame_shape
+        height, width, channels = self.frame_shape
+        self.frame_center = (int(height / 2), int(width / 2))
+        logging.info(f"Frame shape: {height, width} -> Frame Center: {self.frame_center}")
 
     def get_person_roi(self, frame):
-        height, width, channels = frame.shape
-        y = self.threshold_line_y + 100
-        x = int(width - self.person_roi_w / 2)
-        return frame[y-self.person_roi_h:y, x:x+self.person_roi_w]
+        if self.frame_center is None:
+            self.set_frame_shape(frame_shape=frame.shape)
+        x_center, y_center = self.frame_center
+        if self._person_roi_w_half <= x_center and self._person_roi_h_half <= y_center:
+            y0, y1 = y_center - self._person_roi_h_half, y_center + self._person_roi_h_half
+            x0, x1 = x_center - self._person_roi_w_half, x_center + self._person_roi_w_half
+            return frame[y0:y1, x0:x1]
+        return frame
 
     def run(self) -> None:
         self.is_running = True
@@ -54,7 +77,7 @@ class CameraPoseController(threading.Thread):
 
                 # To improve performance, optionally mark the image as not writeable to
                 # pass by reference.
-                #frame.flags.writeable = False
+                # frame.flags.writeable = False
 
                 # Process the image and detect the holistic
                 results = holistic.process(frame)
@@ -102,7 +125,8 @@ class CameraPoseController(threading.Thread):
                 cv2.line(unprocessed_frame, (0, self.threshold_line_y), (width, self.threshold_line_y), (0, 255, 0),
                          thickness=thickness)
 
-                cv2.imshow(self.name, unprocessed_frame)
+                if self.show_camera_window:
+                    cv2.imshow(self.name, unprocessed_frame)
 
                 if cv2.waitKey(1) & 0xFF == 27:
                     break
