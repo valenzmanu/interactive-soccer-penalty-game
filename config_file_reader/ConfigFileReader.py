@@ -7,6 +7,41 @@ class ConfigFileReader:
     CONFIG_FILE = "config.txt"
 
     @classmethod
+    def read_spot_files(cls) -> tuple:
+        try:
+            config = configparser.ConfigParser()
+            config.read(cls.CONFIG_FILE)
+
+            if "spots" in config:
+                spots_paths = []
+                for spot in config["spots"]:
+                    spots_paths.append(spot)
+                return tuple(spots_paths)
+
+        except Exception as ex:
+            logging.error(f"Unable to read spots {ex}")
+
+    @classmethod
+    def read_game_settings(cls) -> dict:
+        game_settings = {"bar_velocity": 1}
+        try:
+            config = configparser.ConfigParser()
+            config.read(cls.CONFIG_FILE)
+
+            if cls.CONFIG_FILE not in os.listdir():
+                logging.warning(f'{cls.CONFIG_FILE} not found. Using default config: {game_settings}')
+                return game_settings
+
+            if "game-settings" in config:
+                game_settings["bar-velocity"] = int(config["game-settings"]["bar-velocity"])
+                logging.info(f'Successfully read show_camera_window={game_settings}')
+                return game_settings
+
+        except Exception as ex:
+            logging.error(f"Unable to read game settings {ex}")
+        return game_settings
+
+    @classmethod
     def read_show_camera_window(cls) -> bool:
         show_camera_window = True
         try:

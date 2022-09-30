@@ -62,7 +62,7 @@ class CameraPoseController(threading.Thread):
         mp_holistic = mp.solutions.holistic
         simple_threshold_classificator = SimpleThresholdPoseClassification(threshold_y=self.threshold_line_y)
         logging.debug(f'Opening video capture from {self.camera_source}')
-        cap = cv2.VideoCapture(self.camera_source)
+        cap = cv2.VideoCapture(self.camera_source, cv2.CAP_DSHOW)
 
         with mp_holistic.Holistic(
                 min_detection_confidence=0.5,

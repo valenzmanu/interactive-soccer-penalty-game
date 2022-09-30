@@ -39,6 +39,13 @@ def main():
                 camera_pose_controller.stop()
                 logging.info(f'Stopping Game')
                 exit(0)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_k and not penalty_game_window2.showing_spot:
+                    penalty_game_window2.trigger_kick_video()
+                if event.key == pygame.K_r and penalty_game_window2.waiting and not penalty_game_window2.showing_spot:
+                    penalty_game_window2.quit_waiting()
+                if event.key == pygame.K_s:
+                    penalty_game_window2.toggle_mode()
 
 
 if __name__ == "__main__":
