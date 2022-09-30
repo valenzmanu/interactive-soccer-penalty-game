@@ -80,7 +80,7 @@ class PenaltyGameWindow2:
 
         # Moving Objects
         self.accuracy_bar = AccuracyMovingBar(
-            base_image_path="game_icons/accuracy_bar_degradated.png",
+            base_image_path="game_icons/MEDIDORDUCAL.png",
             moving_object_image_path="game_icons/ducal-qtar-rojos-dp-brasil.png",
             velocity=ConfigFileReader.read_game_settings()["bar-velocity"],
             window_size=self.window_size
@@ -127,7 +127,7 @@ class PenaltyGameWindow2:
 
         capture = self.caps[self.current_animation_index]
         ret, frame = capture.read()
-        cv2.waitKey(1)
+        cv2.waitKey(3)
 
         if self.video_ended(ret):
 

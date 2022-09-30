@@ -24,16 +24,16 @@ class AccuracyMovingBar:
         # Base Image
         self.base_image_path = base_image_path
         self.moving_object_image_path = moving_object_image_path
-        self._base_image_dimensions = ((14 / 100) * window_size[0], (880 / 1000) * window_size[1])
+        self._base_image_dimensions = (0.14 * window_size[0], 0.75 * window_size[1])
         self._base_image = pygame.image.load(self.base_image_path)
         self._base_image = pygame.transform.scale(self._base_image, self._base_image_dimensions)
-        self._base_image_origin = ((13 / 1000) * window_size[0], (1 / 12) * window_size[1])
+        self._base_image_origin = (0.01 * window_size[0] - 10, 0.125 * window_size[1])
 
         # Moving Circle
         base_image_width = self._base_image_dimensions[0]
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         original_size = self._moving_object_image.get_size()
-        self._moving_object_image_dimensions = (int(0.0016 * window_size[0] * original_size[0]), int(0.0016 * window_size[0] * original_size[1]))
+        self._moving_object_image_dimensions = (int(0.0011 * window_size[0] * original_size[0]), int(0.0011 * window_size[0] * original_size[1]))
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
         self._moving_object_image = pygame.transform.rotate(self._moving_object_image, 15)
@@ -69,7 +69,7 @@ class AccuracyMovingBar:
     def _update_paused(self, y_position: int, screen: pygame.surface):
         position = self._moving_object_image.get_rect()
         position.y = y_position
-        position.x = self._base_image_origin[0] - int(self._moving_object_image.get_size()[0] / 16)
+        position.x = self._base_image_origin[0] + int(self._moving_object_image.get_size()[0] * 0.1)
         screen.blit(self._base_image, self._base_image_origin)
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
@@ -99,7 +99,7 @@ class AccuracyMovingBar:
             position = self.move_object_up(self._moving_object_image)
 
         self.current_y_position = position.y
-        position.x = self._base_image_origin[0] - int(self._moving_object_image.get_size()[0] / 16)
+        position.x = self._base_image_origin[0] + int(self._moving_object_image.get_size()[0] * 0.1)
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
 

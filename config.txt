@@ -2,7 +2,7 @@
 bar-velocity=2
 
 [game-window]
-start-position-x=350
+start-position-x=850
 start-position-y=350
 window-width=270
 window-height=210
@@ -10,7 +10,7 @@ window-scale-factor=2
 fullscreen=False
 
 [video-animations]
-ready-animation=video_animations/DucalInicial.mp4
+ready-animation=video_animations/DucalInicio.mp4
 goal-animation=video_animations/DucalGol.mp4
 fail-animation=video_animations/DucalFallaPenal.mp4
 
