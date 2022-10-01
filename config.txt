@@ -1,12 +1,12 @@
 [game-settings]
-bar-velocity=2
+bar-velocity=5
 
 [game-window]
 start-position-x=850
 start-position-y=350
 window-width=270
 window-height=210
-window-scale-factor=2
+window-scale-factor=3
 fullscreen=False
 
 [video-animations]

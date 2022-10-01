@@ -81,7 +81,9 @@ class PenaltyGameWindow2:
         # Moving Objects
         self.accuracy_bar = AccuracyMovingBar(
             base_image_path="game_icons/MEDIDORDUCAL.png",
-            moving_object_image_path="game_icons/ducal-qtar-rojos-dp-brasil.png",
+            moving_object_image_dir=["game_icons/d1.png", "game_icons/d2.png", "game_icons/d3.png",
+                                     "game_icons/d4.png", "game_icons/d5.png", "game_icons/d6.png",
+                                     "game_icons/d7.png"],
             velocity=ConfigFileReader.read_game_settings()["bar-velocity"],
             window_size=self.window_size
         )

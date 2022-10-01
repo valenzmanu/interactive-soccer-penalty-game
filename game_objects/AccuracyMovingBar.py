@@ -1,4 +1,5 @@
 import logging
+import random
 
 import pygame
 import time
@@ -20,10 +21,14 @@ class AccuracyMovingBar:
     YELLOW_REGION_DOWN = (121, 140)
     RED_REGION_DOWN = (141, 160)
 
-    def __init__(self, base_image_path: str, moving_object_image_path: str, velocity: int, window_size: tuple):
+    def __init__(self, base_image_path: str, moving_object_image_dir: list, velocity: int, window_size: tuple):
+
+        self.window_size = window_size
+
         # Base Image
         self.base_image_path = base_image_path
-        self.moving_object_image_path = moving_object_image_path
+        self.moving_object_image_dir = moving_object_image_dir
+        self.moving_object_image_path = random.choice(moving_object_image_dir)
         self._base_image_dimensions = (0.14 * window_size[0], 0.75 * window_size[1])
         self._base_image = pygame.image.load(self.base_image_path)
         self._base_image = pygame.transform.scale(self._base_image, self._base_image_dimensions)
@@ -33,15 +38,17 @@ class AccuracyMovingBar:
         base_image_width = self._base_image_dimensions[0]
         self._moving_object_image = pygame.image.load(self.moving_object_image_path)
         original_size = self._moving_object_image.get_size()
-        self._moving_object_image_dimensions = (int(0.0011 * window_size[0] * original_size[0]), int(0.0011 * window_size[0] * original_size[1]))
+        self._moving_object_image_dimensions = (
+            int(0.0004 * window_size[0] * original_size[0]), int(0.0004 * window_size[0] * original_size[1]))
         self._moving_object_image = pygame.transform.scale(self._moving_object_image,
                                                            self._moving_object_image_dimensions)
-        self._moving_object_image = pygame.transform.rotate(self._moving_object_image, 15)
+        self._moving_object_image = pygame.transform.rotate(self._moving_object_image, 10)
         self._moving_object_is_paused = False
         self.velocity = velocity
         self._current_velocity_direction = 1
         self.upper_limit = self._base_image_origin[1]
-        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - self._moving_object_image.get_size()[1]
+        self.lower_limit = self._base_image_origin[1] + self._base_image_dimensions[1] - \
+                           self._moving_object_image.get_size()[1]
         print("********** Bar Limits **********")
         print("upper_limit:", self.upper_limit)
         print("lower_limit:", self.lower_limit)
@@ -73,6 +80,15 @@ class AccuracyMovingBar:
         screen.blit(self._base_image, self._base_image_origin)
         screen.blit(self._moving_object_image, position)
         pygame.display.update()
+
+    def set_moving_object_new_image(self):
+        self._moving_object_image = pygame.image.load(random.choice(self.moving_object_image_dir))
+        original_size = self._moving_object_image.get_size()
+        self._moving_object_image_dimensions = (
+            int(0.0004 * self.window_size[0] * original_size[0]), int(0.0004 * self.window_size[0] * original_size[1]))
+        self._moving_object_image = pygame.transform.scale(self._moving_object_image,
+                                                           self._moving_object_image_dimensions)
+        self._moving_object_image = pygame.transform.rotate(self._moving_object_image, 10)
 
     def update(self, screen: pygame.Surface):
 
@@ -117,6 +133,7 @@ class AccuracyMovingBar:
         return self.current_y_position
 
     def stop(self):
+        self.set_moving_object_new_image()
         self._moving_object_is_paused = True
 
     def play(self):
