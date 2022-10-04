@@ -48,6 +48,9 @@ class PenaltyGameWindow2:
             new_spot_cap = cv2.VideoCapture(spot_path)
             self.spots.append(new_spot_cap)
 
+        # Winners Counter
+        self.winner_counter = 0
+
         # Pygame Stuff
         self.name = "PenaltyGameWindow2"
         self.readable_name = "Penalty Game"
@@ -164,11 +167,11 @@ class PenaltyGameWindow2:
         region = self.accuracy_bar.get_moving_object_region()
         self.accuracy_bar.stop()
         logging.info(f"Triggering Kick Video. Ball in region {region}")
+        self.winner_counter = (self.winner_counter + 1) % 10
         if self.animation_is_finished:
-            if region == self.accuracy_bar.GREEN:
+            if self.winner_counter == 1:
                 self.current_animation_index = 1
-            elif region == self.accuracy_bar.YELLOW:
-                self.current_animation_index = random.randint(1, 2)
+                logging.info(f"Green region. Winner_counter = {self.winner_counter}")
             else:
                 self.current_animation_index = 2
             self.animation_is_finished = False
