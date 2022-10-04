@@ -1,12 +1,12 @@
 [game-settings]
-bar-velocity=5
+bar-velocity=9
 
 [game-window]
-start-position-x=850
-start-position-y=350
-window-width=270
-window-height=210
-window-scale-factor=3
+start-position-x=-5
+start-position-y=-6
+window-width=450
+window-height=425
+window-scale-factor=1
 fullscreen=False
 
 [video-animations]
@@ -21,7 +21,7 @@ spot-3=spots/spot3.mp4
 
 [camera]
 source=0
-person-roi-w=580
-person-roi-h=480
-threshold-line-y=350
+person-roi-w=140
+person-roi-h=480rs
+threshold-line-y=330
 show-camera-window=True
