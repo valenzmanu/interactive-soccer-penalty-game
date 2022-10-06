@@ -22,6 +22,6 @@ spot-3=spots/spot3.mp4
 [camera]
 source=0
 person-roi-w=140
-person-roi-h=480rs
+person-roi-h=480
 threshold-line-y=330
 show-camera-window=True
