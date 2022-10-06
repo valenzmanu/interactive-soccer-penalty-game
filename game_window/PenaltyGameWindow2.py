@@ -164,12 +164,12 @@ class PenaltyGameWindow2:
     def trigger_kick_video(self):
         if self.showing_spot or self.waiting:
             return
-        region = self.accuracy_bar.get_moving_object_region()
+        region = self.accuracy_bar.get_ducal_win_region()
         self.accuracy_bar.stop()
         logging.info(f"Triggering Kick Video. Ball in region {region}")
-        self.winner_counter = (self.winner_counter + 1) % 10
+        self.winner_counter = (self.winner_counter + 1) % 5
         if self.animation_is_finished:
-            if self.winner_counter == 1:
+            if self.winner_counter == 1 and region == self.accuracy_bar.GREEN:
                 self.current_animation_index = 1
                 logging.info(f"Green region. Winner_counter = {self.winner_counter}")
             else:

@@ -147,6 +147,21 @@ class AccuracyMovingBar:
     def reset_pause_flag(self):
         self._moving_object_is_paused = False
 
+    def get_ducal_win_region(self) -> int:
+        if self.red_region_up[0] < self.current_y_position <= self.red_region_up[1]:
+            return self.RED
+        elif self.yellow_region_up[0] < self.current_y_position <= self.yellow_region_up[1]:
+            return self.RED
+        elif self.green_region[0] <= self.current_y_position <= self.green_region[1]:
+            return self.RED
+        elif self.yellow_region_down[0] <= self.current_y_position < self.yellow_region_down[1]:
+            return self.GREEN
+        elif self.red_region_down[0] <= self.current_y_position < self.red_region_down[1]:
+            return self.GREEN
+        else:
+            logging.warning(f'Moving object should be inside a region. Y pos: {self.current_y_position}')
+            return self.INVALID_REGION
+
     def get_moving_object_region(self) -> int:
         if self.red_region_up[0] < self.current_y_position <= self.red_region_up[1]:
             return self.RED
