@@ -1,0 +1,1 @@
+Start /b python "C:\Users\mant8\Desktop\interactive-soccer-penalty-game\interactive-soccer-penalty-game\main.py"
