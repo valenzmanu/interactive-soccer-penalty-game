@@ -76,7 +76,7 @@ class PenaltyGameWindow2:
         self.last_animation_trigger_time = 0
         self.new_trigger = False
         self.waiting = False
-        self.showing_spot = True
+        self.showing_spot = False
 
         # Pause Buffer
         self.pause_frame = None
@@ -84,9 +84,7 @@ class PenaltyGameWindow2:
         # Moving Objects
         self.accuracy_bar = AccuracyMovingBar(
             base_image_path="game_icons/MEDIDORDUCAL.png",
-            moving_object_image_dir=["game_icons/d1.png", "game_icons/d2.png", "game_icons/d3.png",
-                                     "game_icons/d4.png", "game_icons/d5.png", "game_icons/d6.png",
-                                     "game_icons/d7.png"],
+            moving_object_image_dir=["game_icons/bimbo.png"],
             velocity=ConfigFileReader.read_game_settings()["bar-velocity"],
             window_size=self.window_size
         )
